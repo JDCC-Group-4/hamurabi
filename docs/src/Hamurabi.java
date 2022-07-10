@@ -1,3 +1,5 @@
+package hammurabi.docs.src;
+
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -42,6 +44,8 @@ public class Hamurabi {
 		this.plantSeedLoopSwitch = false;
 		this.bushelsPerAcre = 3;
 		this.newLV = 19;
+		this.year = 1;
+		this.peopleStarved = 0;
 	}
 
 
@@ -68,10 +72,10 @@ public class Hamurabi {
 		return uprising;
 	}
 
-	int peopleStarved() {
+	 int peopleStarved(int bushelsFed, int population) {
 		if ((bushelsFed / 20) < population) {
-			population = bushelsFed / 20;
-			peopleStarved = population - (bushelsFed / 20);
+			peopleStarved += (population - (bushelsFed / 20));
+			population = population - peopleStarved;
 		}
 		return peopleStarved;
 	}
@@ -110,7 +114,11 @@ public class Hamurabi {
 				if (totalBushels < landValue * userInput) {
 					System.out.println("You only have "+ totalBushels +" to spend!");
 					input2.nextInt();
-				} else {
+				}
+				else if(userInput < 0){
+					System.out.println("Number must be 0 or more");
+				}
+				else {
 					acres += userInput;
 					totalBushels -= landValue * userInput;
 					buyOrSellLoopSwitch2 = true;
@@ -132,7 +140,11 @@ public class Hamurabi {
 				if (userInput > acres) {
 					System.out.println("You only have " + acres + " !");
 					input3.nextInt();
-				} else {
+				}
+				else if(userInput < 0){
+					System.out.println("Number must be 0 or more");
+				}
+				else {
 					acres -= userInput;
 					totalBushels += landValue * userInput;
 					buyOrSellLoopSwitch2 = true;
@@ -157,6 +169,7 @@ public class Hamurabi {
 					System.out.println("You can't take food from people!");
 				} else {
 					totalBushels -= userInput;
+					bushelsFed = userInput;
 					feedGrainLoopSwitch = true;
 				}
 			} catch (InputMismatchException e) {
@@ -250,28 +263,38 @@ public class Hamurabi {
 		return plaguePercent;
 	}
 
+	boolean switchReset(){
+		buyOrSellLoopSwitch = 2;
+		buyOrSellLoopSwitch2 = false;
+		feedGrainLoopSwitch = false;
+		plantSeedLoopSwitch = false;
+		return false;
+	}
+
 	public static void main(String[] args) throws IOException {
 
 		Hamurabi game = new Hamurabi();
-		game.printSummary();
-		while(game.buyOrSellLoopSwitch > 1) {
-			game.buyOrSellAcres();// Sets buyOrSell
-		}
-		while(game.buyOrSellLoopSwitch2 == false) {
-			if (game.buyOrSellLoopSwitch == 0) {
-				game.askAcresToBuy();
-			} else if (game.buyOrSellLoopSwitch == 1) {
-				game.askAcresToSell();
+		for(game.year = 1; game.year <= 10; game.year++) {
+			game.printSummary();
+			while (game.buyOrSellLoopSwitch > 1) {
+				game.buyOrSellAcres();// Sets buyOrSell
 			}
+			while (game.buyOrSellLoopSwitch2 == false) {
+				if (game.buyOrSellLoopSwitch == 0) {
+					game.askAcresToBuy();
+				} else if (game.buyOrSellLoopSwitch == 1) {
+					game.askAcresToSell();
+				}
+			}
+			while (game.feedGrainLoopSwitch == false) {
+				game.askHowMuchGrainToFeedPeople();
+			}
+			while (game.plantSeedLoopSwitch == false) {
+				game.howManyAcresToPlant();
+			}
+			game.peopleStarved(game.bushelsFed, game.population);
+			game.switchReset();
 		}
-		while(game.feedGrainLoopSwitch == false){
-			game.askHowMuchGrainToFeedPeople();
-		}
-		while(game.plantSeedLoopSwitch == false){
-			game.howManyAcresToPlant();
-		}
-		game.peopleStarved();
-
 
 	}
 }
