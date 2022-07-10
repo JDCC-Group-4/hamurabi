@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -18,17 +19,29 @@ public class Hamurabi {
 	int peopleStarved;
 	String printSummary;
 	boolean uprising;
-	int buyOrSell;
+	boolean buyOrSellLoopSwitch2;
+	boolean feedGrainLoopSwitch;
+	boolean plantSeedLoopSwitch;
+	int buyOrSellLoopSwitch;
 	int userInput;
+	int newLV;
 	String userInputString;
+	int game;
+	int minAttack;
+	int maxAttack;
+	int attackResult;
 
 	public Hamurabi() {
 		this.population = 100;
 		this.totalBushels = 2800;
 		this.landValue = 19;
 		this.acres = 1000;
-		this.buyOrSell = 2;
+		this.buyOrSellLoopSwitch = 2;
+		this.buyOrSellLoopSwitch2 = false;
+		this.feedGrainLoopSwitch = false;
+		this.plantSeedLoopSwitch = false;
 		this.bushelsPerAcre = 3;
+		this.newLV = 19;
 	}
 
 
@@ -76,27 +89,36 @@ public class Hamurabi {
 	int buyOrSellAcres() {
 		System.out.println("Would you like to buy or sell acres?\n Type 'Buy' or 'Sell'");
 		Scanner input = new Scanner(System.in);
-		userInputString = input.nextLine().toLowerCase();
+		userInputString = input.nextLine().toLowerCase().replaceAll("\\s+","");
 		if (userInputString.equals("buy")) {
-			buyOrSell = 0;
+			buyOrSellLoopSwitch = 0;
 		} else if (userInputString.equals("sell")) {
-			buyOrSell = 1;
+			buyOrSellLoopSwitch = 1;
 		} else {
 			System.out.println("That's not a valid input");
-			buyOrSell = 2;
+			buyOrSellLoopSwitch = 2;
 		}
-		return buyOrSell;
+		return buyOrSellLoopSwitch;
 	}
 
 	int askAcresToBuy() {
 		System.out.println("How many acres would you like to buy?");
 		Scanner input2 = new Scanner(System.in);
-		userInput = input2.nextInt();
-		if (totalBushels < landValue * userInput) {
-			System.out.println("You don't own that much land!");
-		} else {
-			acres += userInput;
-			totalBushels -= landValue * userInput;
+		while(buyOrSellLoopSwitch2 == false) {
+			try {
+				userInput = input2.nextInt();
+				if (totalBushels < landValue * userInput) {
+					System.out.println("You only have "+ totalBushels +" to spend!");
+					input2.nextInt();
+				} else {
+					acres += userInput;
+					totalBushels -= landValue * userInput;
+					buyOrSellLoopSwitch2 = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Try that again with numbers");
+			}
+			input2.nextLine();
 		}
 		return totalBushels;
 	}
@@ -104,12 +126,21 @@ public class Hamurabi {
 	int askAcresToSell() {
 		System.out.println("How many acres would you like to sell?");
 		Scanner input3 = new Scanner(System.in);
-		userInput = input3.nextInt();
-		if (userInput > acres) {
-			System.out.println("You only have " + acres);
-		} else {
-			acres -= userInput;
-			totalBushels += landValue * userInput;
+		while(buyOrSellLoopSwitch2 == false) {
+			try {
+				userInput = input3.nextInt();
+				if (userInput > acres) {
+					System.out.println("You only have " + acres + " !");
+					input3.nextInt();
+				} else {
+					acres -= userInput;
+					totalBushels += landValue * userInput;
+					buyOrSellLoopSwitch2 = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Try that again with numbers");
+			}
+			input3.nextLine();
 		}
 		return totalBushels;
 	}
@@ -117,12 +148,21 @@ public class Hamurabi {
 	int askHowMuchGrainToFeedPeople(){
 		System.out.println("Enter amount of grain to feed people?");
 		Scanner Input = new Scanner(System.in);
-		userInput = Input.nextInt();
-		if(userInput > totalBushels){
-			System.out.println("You don't have that much food!");
-		}
-		else {
-			totalBushels -= userInput;
+		while(feedGrainLoopSwitch == false) {
+			try {
+				userInput = Input.nextInt();
+				if (userInput > totalBushels) {
+					System.out.println("You don't have that much food!");
+				} else if (userInput < 0) {
+					System.out.println("You can't take food from people!");
+				} else {
+					totalBushels -= userInput;
+					feedGrainLoopSwitch = true;
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Try that again with numbers");
+			}
+			Input.nextLine();
 		}
 		return 0;
 	}
@@ -130,24 +170,31 @@ public class Hamurabi {
 	int howManyAcresToPlant() {
 		System.out.println("How many acres would you like to plant?");
 		Scanner Input = new Scanner(System.in);
-		userInput = Input.nextInt();
-		if (totalBushels >= userInput * 2) {
-			if (acres >= userInput) {
-				if (population >= userInput / 10) {
-					bushelsPlanted = userInput * 2;
-				}
-				else {
-					System.out.println("You don't have enough people");
-				}
-			}
-			else {
-					System.out.println("You don't have enough acres");
-				}
+		while(plantSeedLoopSwitch == false) {
+			try {
+				userInput = Input.nextInt();
+				if (userInput < 0) {
+					System.out.println("You can't unplant the plants!");
+				} else if (totalBushels >= userInput * 2) {
+					if (acres >= userInput) {
+						if (population >= userInput / 10) {
+							bushelsPlanted = userInput * 2;
+							plantSeedLoopSwitch = true;
+						} else {
+							System.out.println("You don't have enough people");
+						}
+					} else {
+						System.out.println("You don't have enough acres");
+					}
 
 
+				} else {
+					System.out.println("You don't have enough bushels");
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("Try that again with numbers");
 			}
-		else {
-			System.out.println("You don't have enough bushels");
+			Input.nextLine();
 		}
 		return bushelsPlanted;
 	}
@@ -159,26 +206,27 @@ public class Hamurabi {
 		int n = random.nextInt(6 + 1);
 
 		bushelsPerAcre += (bushelsPlanted * n) + totalBushels;
+		return bushelsPerAcre;
 	}
 
 	int newLandValue(){
 		//IF YEAR CHANGES??
 		//while(year < 10)??
 		Random random = new Random();
-		int newLV = random.nextInt(17,24);
-		return landValue = newLV;
+		newLV = 17 + random.nextInt(24 - 17);
 		//*LAND VALUE IS DEPENDENT ON YEAR CHANGE? SO THE VALUE ONLY CHANGES WHEN
 		//*A NEW RANDOM VALUE IS NEEDED
+		return newLV;
 	}
 
 	int ratAttack() {
 		//IF YEAR CHANGES ......should game be YEAR!??! Everytime we do random number
 		//its because the YEAR changed?
 		Random r = new Random();
-		int game = r.nextInt(100);
-		int minAttack = totalBushels / 10;
-		int maxAttack = totalBushels / 30;
-		int attackResult = r.nextInt(minAttack, maxAttack) * 10;
+		game = r.nextInt(100);
+		minAttack = (int) (totalBushels * .1);
+		maxAttack = (int) (totalBushels * .3);
+		attackResult = minAttack + r.nextInt(maxAttack-minAttack);
 
 		if (game < 60) { // if game number is 60 that leaves 40%
 			// to do something?
@@ -188,6 +236,7 @@ public class Hamurabi {
 		}else{
 			System.out.println("You got lucky this plague season....");
 		}
+		return attackResult;
 	}
 
 	int plague(){
@@ -198,23 +247,31 @@ public class Hamurabi {
 
 		}
 
+		return plaguePercent;
 	}
 
 	public static void main(String[] args) throws IOException {
 
 		Hamurabi game = new Hamurabi();
 		game.printSummary();
-		while(game.buyOrSell > 1) {
-		game.buyOrSellAcres();// Sets buyOrSell
-			if (game.buyOrSell == 0) {
+		while(game.buyOrSellLoopSwitch > 1) {
+			game.buyOrSellAcres();// Sets buyOrSell
+		}
+		while(game.buyOrSellLoopSwitch2 == false) {
+			if (game.buyOrSellLoopSwitch == 0) {
 				game.askAcresToBuy();
-			} else if (game.buyOrSell == 1) {
+			} else if (game.buyOrSellLoopSwitch == 1) {
 				game.askAcresToSell();
 			}
 		}
-		game.askHowMuchGrainToFeedPeople();
-		game.howManyAcresToPlant();
+		while(game.feedGrainLoopSwitch == false){
+			game.askHowMuchGrainToFeedPeople();
+		}
+		while(game.plantSeedLoopSwitch == false){
+			game.howManyAcresToPlant();
+		}
 		game.peopleStarved();
+
 
 	}
 }
