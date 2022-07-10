@@ -10,11 +10,20 @@ public class Hamurabi {
 
 	private int year;
 	int totalBushels;
-	private int bushelsPerAcre;
-	private int bushelsPlanted;
+	public int bushelsPerAcre;
+	public int bushelsPlanted;
 	private int bushelsDestroyed;
 	private int bushelsFed;
 	private int people;
+
+	public void setBushelsFed(int bushelsFed) {
+		this.bushelsFed = bushelsFed;
+	}
+
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+
 	int population;
 	int acres;
 	int landValue;
@@ -32,7 +41,8 @@ public class Hamurabi {
 	int minAttack;
 	int maxAttack;
 	int attackResult;
-
+	int n;
+	int bushelsHarvested;
 	public Hamurabi() {
 		this.population = 100;
 		this.totalBushels = 2800;
@@ -42,11 +52,27 @@ public class Hamurabi {
 		this.buyOrSellLoopSwitch2 = false;
 		this.feedGrainLoopSwitch = false;
 		this.plantSeedLoopSwitch = false;
-		this.bushelsPerAcre = 3;
 		this.newLV = 19;
 		this.year = 1;
 		this.peopleStarved = 0;
+		this.n = 0;
 	}
+	public void setBushelsPlanted(int bushelsPlanted){
+		this.bushelsPlanted = bushelsPlanted;
+
+	}
+
+	public void setTotalBushels(int totalBushels){
+		this.totalBushels = totalBushels;
+
+	}
+
+	public void setBushelsPerAcre(int bushelsPerAcre){
+		this.bushelsPerAcre = bushelsPerAcre;
+
+	}
+
+
 
 
 	String printSummary() {
@@ -72,7 +98,7 @@ public class Hamurabi {
 		return uprising;
 	}
 
-	 int peopleStarved(int bushelsFed, int population) {
+	 public int peopleStarved() {
 		if ((bushelsFed / 20) < population) {
 			peopleStarved += (population - (bushelsFed / 20));
 			population = population - peopleStarved;
@@ -212,14 +238,15 @@ public class Hamurabi {
 		return bushelsPlanted;
 	}
 
-	int newHarvest(){
+	public int newHarvest(){
 		//IF YEAR CHANGES??
 		//while(year < 10)??
 		Random random = new Random();
-		int n = random.nextInt(6 + 1);
+		bushelsPerAcre = random.nextInt(6 + 1);
 
-		bushelsPerAcre += (bushelsPlanted * n) + totalBushels;
-		return bushelsPerAcre;
+		bushelsHarvested += (bushelsPlanted * bushelsPerAcre);
+		totalBushels += bushelsHarvested;
+		return bushelsHarvested;
 	}
 
 	int newLandValue(){
@@ -292,7 +319,7 @@ public class Hamurabi {
 			while (game.plantSeedLoopSwitch == false) {
 				game.howManyAcresToPlant();
 			}
-			game.peopleStarved(game.bushelsFed, game.population);
+			game.peopleStarved();
 			game.switchReset();
 		}
 
