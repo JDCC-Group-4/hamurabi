@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Hamurabi {
@@ -149,6 +150,54 @@ public class Hamurabi {
 			System.out.println("You don't have enough bushels");
 		}
 		return bushelsPlanted;
+	}
+
+	int newHarvest(){
+		//IF YEAR CHANGES??
+		//while(year < 10)??
+		Random random = new Random();
+		int n = random.nextInt(6 + 1);
+
+		bushelsPerAcre += (bushelsPlanted * n) + totalBushels;
+	}
+
+	int newLandValue(){
+		//IF YEAR CHANGES??
+		//while(year < 10)??
+		Random random = new Random();
+		int newLV = random.nextInt(17,24);
+		return landValue = newLV;
+		//*LAND VALUE IS DEPENDENT ON YEAR CHANGE? SO THE VALUE ONLY CHANGES WHEN
+		//*A NEW RANDOM VALUE IS NEEDED
+	}
+
+	int ratAttack() {
+		//IF YEAR CHANGES ......should game be YEAR!??! Everytime we do random number
+		//its because the YEAR changed?
+		Random r = new Random();
+		int game = r.nextInt(100);
+		int minAttack = totalBushels / 10;
+		int maxAttack = totalBushels / 30;
+		int attackResult = r.nextInt(minAttack, maxAttack) * 10;
+
+		if (game < 60) { // if game number is 60 that leaves 40%
+			// to do something?
+			bushelsDestroyed = totalBushels - attackResult;
+			totalBushels = totalBushels - bushelsDestroyed;
+			 ;
+		}else{
+			System.out.println("You got lucky this plague season....");
+		}
+	}
+
+	int plague(){
+		Random r = new Random();
+		int plaguePercent = r.nextInt(100);
+		if(plaguePercent < 15){
+			population -= people / 2;
+
+		}
+
 	}
 
 	public static void main(String[] args) throws IOException {
