@@ -85,13 +85,13 @@ public class Hamurabi {
 		printSummary = "Hammurabi, I can report to you:\nYou are in year " + year + " of your 10 year rule.\n";
 		printSummary += "In the previous year " + peopleStarved + " people starved to death.\n";
 		printSummary += "In the previous year " + peopleImmigrated + " people immigrated to the kingdom.\n";
+		printSummary += plagueDeaths + " people died from plague in your kingdom.\n";
 		printSummary += "The population is now " + population + ".\n";
 		printSummary += "The city owns " + acres + " acres of land.\n";
 		printSummary += "Planting costs 2 bushels per acre.\n";
 		printSummary += "Your kingdom harvested " + (bushelsHarvested) + " bushels at " + bushelsPerAcre + " bushels per acre.\n";
 		printSummary += "Rats destroyed " + bushelsDestroyed + " bushels, leaving " + totalBushels + " bushels in storage.\n";
 		printSummary += "Land is currently worth " + landValue + " bushels per acre.\n";
-		printSummary += plagueDeaths + " people died from plague in your kingdom.\n";
 		System.out.println(printSummary);
 		return printSummary;
 	}
