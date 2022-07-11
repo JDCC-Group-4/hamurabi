@@ -14,8 +14,24 @@ public class Hamurabi {
 	public int bushelsPlanted;
 	private int bushelsDestroyed;
 	private int bushelsFed;
+
+	public void setChance(int chance) {
+		this.chance = chance;
+	}
+
+	private int chance;
+
+	public void setPeople(int people) {
+		this.people = people;
+	}
+
 	private int people;
 
+	public void setPlaguePercent(int plaguePercent) {
+		this.plaguePercent = plaguePercent;
+	}
+
+	public int plaguePercent;
 	public void setBushelsFed(int bushelsFed) {
 		this.bushelsFed = bushelsFed;
 	}
@@ -24,7 +40,7 @@ public class Hamurabi {
 		this.population = population;
 	}
 
-	int population;
+	public int population;
 	int acres;
 	int landValue;
 	int peopleStarved;
@@ -34,6 +50,12 @@ public class Hamurabi {
 	boolean feedGrainLoopSwitch;
 	boolean plantSeedLoopSwitch;
 	int buyOrSellLoopSwitch;
+
+	public void setPercentStarved(float percentStarved) {
+		this.percentStarved = percentStarved;
+	}
+
+	float percentStarved;
 	int userInput;
 	int newLV;
 	String userInputString;
@@ -43,6 +65,15 @@ public class Hamurabi {
 	int attackResult;
 	int n;
 	int bushelsHarvested;
+
+	public void setPeopleStarved(int peopleStarved) {
+		this.peopleStarved = peopleStarved;
+	}
+
+	public void setUprising(boolean uprising) {
+		this.uprising = uprising;
+	}
+
 	public Hamurabi() {
 		this.population = 100;
 		this.totalBushels = 2800;
@@ -56,6 +87,10 @@ public class Hamurabi {
 		this.year = 1;
 		this.peopleStarved = 0;
 		this.n = 0;
+		this.plaguePercent = 0;
+		this.people = 0;
+		this.chance = 0;
+		this.percentStarved = 0;
 	}
 	public void setBushelsPlanted(int bushelsPlanted){
 		this.bushelsPlanted = bushelsPlanted;
@@ -259,7 +294,7 @@ public class Hamurabi {
 		return newLV;
 	}
 
-	int ratAttack() {
+	public int ratAttack() {
 		//IF YEAR CHANGES ......should game be YEAR!??! Everytime we do random number
 		//its because the YEAR changed?
 		Random r = new Random();
@@ -279,15 +314,17 @@ public class Hamurabi {
 		return attackResult;
 	}
 
-	int plague(){
+	public int plague(){
 		Random r = new Random();
-		int plaguePercent = r.nextInt(100);
-		if(plaguePercent < 15){
-			population -= people / 2;
+		int plaguePercent = 15;
+		int chance = r.nextInt(100);
+		if(plaguePercent > chance){
+			System.out.println(("Covid-15 plague has wiped out half your people! hahahaha"));
+			population -= population / 2;
 
 		}
-
-		return plaguePercent;
+			return population;
+//		System.out.println(("You only have half your bushels left, only " + totalBushels + (" remaining.")));;
 	}
 
 	boolean switchReset(){
